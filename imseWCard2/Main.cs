@@ -14,6 +14,22 @@
 //
 //=======================================================================================================================
 
+
+//=======================================================================================================================
+//   Parking System Project - IMSE3019 
+//
+//   Created by  : Felipe Alamos
+//   Date        : 12 / 1 / 2012
+//   Remark      :                   
+//      1. The project is based in the project developed by Bill Chan, mentioned aboved.
+//
+//      2. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E, is used to store the value for
+//         transactions.
+//
+//=======================================================================================================================
+
+
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,9 +54,11 @@ namespace imseWCard2
         // true if a transaction is done. Reset to false if a connection is lost.
         private bool transectionDone = false;
 
-        //  Block 2 of sector 15, i.e. block 0x3E, is used 
+        // @fhalamos: Block 0, 1 and 2 of sector 15, i.e. block 0x3E, are used to save the biggest purchases
         private int sector = 15;
-        private int block = 0x3E;
+        private int block0 = 0x3C;
+        private int block1 = 0x3D;
+        private int block2 = 0x3E;
 
         public Main()
         {
@@ -339,15 +357,30 @@ namespace imseWCard2
                 }
 
                 // Read the value card
-                long amount = 0;
-                if (CADw.readValueBlock(block, ref amount) == false)
+                //@fhalamos: modify so that label shows the sum of the 3 amounts
+                long amount0 = 0;
+                if (CADw.readValueBlock(block0, ref amount0) == false)
+                {
+                    textBoxMsg.Text = "Read value error!";
+                    return;
+                }
+
+                long amount1 = 0;
+                if (CADw.readValueBlock(block1, ref amount1) == false)
+                {
+                    textBoxMsg.Text = "Read value error!";
+                    return;
+                }
+                
+                long amount2 = 0;
+                if (CADw.readValueBlock(block2, ref amount2) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;
                 }
 
                 // Display the value 
-                labelAmt.Text = toDollar(amount);
+                labelAmt.Text = toDollar(amount0+amount1+amount2);
             }
         }
 
@@ -396,7 +429,7 @@ namespace imseWCard2
             // convert to cents and store into card
             // @fhalamos: Also add value already in card
             Amount = 100*Convert.ToInt32(textBoxConfigAmt.Text);
-            CADw.updateValueBlock(block, Amount);
+            CADw.updateValueBlock(block0, Amount);
         }
 
         private void timer2_Tick(object sender, EventArgs e)
@@ -431,7 +464,7 @@ namespace imseWCard2
 
                 //Read value from the card
                 long amount = 0;
-                if (CADw.readValueBlock(block, ref amount) == false)
+                if (CADw.readValueBlock(block2, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;
@@ -463,7 +496,7 @@ namespace imseWCard2
              * add to the card.
              * */
             int amount = Convert.ToInt32(100.0 * value);
-            if (CADw.incValueBlock(block, amount) == false)
+            if (CADw.incValueBlock(block2, amount) == false)
                 textBoxMsg.Text = "Value increment error!";
         }
 
@@ -500,7 +533,7 @@ namespace imseWCard2
 
                 // Read value from the card
                 long amount = 0;
-                if (CADw.readValueBlock(block, ref amount) == false)
+                if (CADw.readValueBlock(block2, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;
@@ -531,7 +564,7 @@ namespace imseWCard2
                     }
 
                     // Subtract theamount from the card.
-                    if (CADw.decValueBlock(block, newAmount) == false)
+                    if (CADw.decValueBlock(block2, newAmount) == false)
                     {
                         textBoxMsg.Text = "Value decrement error!";
                         return;
@@ -540,7 +573,7 @@ namespace imseWCard2
                 }
 
                 // Read value from the card
-                if (CADw.readValueBlock(block, ref amount) == false)
+                if (CADw.readValueBlock(block2, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;

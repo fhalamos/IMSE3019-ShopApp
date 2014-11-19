@@ -449,7 +449,16 @@ namespace imseWCard2
                     CADw.updateValueBlock(block1, Amount);
                 else if (min == amount2)
                     CADw.updateValueBlock(block2, Amount);
-            }           
+                
+
+                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Ups! Your purchase is too small to be saved, it is smaller than any of your 3 biggest purchases");
+            }
+
+            textBoxConfigAmt.Text = "0";
         }
 
         private void timer2_Tick(object sender, EventArgs e)

@@ -355,9 +355,8 @@ namespace imseWCard2
                     textBoxMsg.Text ="Authentication error!";
                     return;
                 }
-
-                // Read the value card
-                //@fhalamos: modify so that label shows the sum of the 3 amounts
+                // @fhalamos:
+                // Read the value of the 3 blocks in card, sums them and shows the sum in labelAmt
                 long amount0 = 0;
                 if (CADw.readValueBlock(block0, ref amount0) == false)
                 {
@@ -427,9 +426,30 @@ namespace imseWCard2
                 return;
             }
             // convert to cents and store into card
-            // @fhalamos: Also add value already in card
             Amount = 100*Convert.ToInt32(textBoxConfigAmt.Text);
-            CADw.updateValueBlock(block0, Amount);
+            
+            //@fhalamos
+            //We will save amount only if it is bigger than any of the other 3 amounts.
+            long amount0 = 0;
+            CADw.readValueBlock(block0, ref amount0);
+            long amount1 = 0;
+            CADw.readValueBlock(block1, ref amount1);
+            long amount2 = 0;
+            CADw.readValueBlock(block2, ref amount2);
+            
+            //We need to know which is the smallest amount actually saved
+            long min0 = Math.Min(amount0, amount1);
+            long min = Math.Min(min0, amount2);
+
+            if (Amount > min)
+            {
+                if (min == amount0)
+                    CADw.updateValueBlock(block0, Amount);
+                else if (min == amount1)
+                    CADw.updateValueBlock(block1, Amount);
+                else if (min == amount2)
+                    CADw.updateValueBlock(block2, Amount);
+            }           
         }
 
         private void timer2_Tick(object sender, EventArgs e)

@@ -453,7 +453,7 @@ namespace imseWCard2
             // Connection lost.
             if (connected)
             {
-                textBoxMsg.Text = "Lose connection!";
+                textBoxMsg.Text = "Lost connection!";
                 labelAmt.Text = "";
                 quantityFreeHourslabel.Text = "";
                 cardIdLabel.Text = "";
@@ -478,7 +478,8 @@ namespace imseWCard2
 
         private void resetMemoryValues()
         {
-            CADw.updateValueBlock(cardIdBlock, 0);
+            CADw.write(cardIdBlock, "");
+            CADw.write(carPatentBlock, "");
             CADw.updateValueBlock(amount0Block, 0);
             CADw.updateValueBlock(amount1Block, 0);
             CADw.updateValueBlock(amount2Block, 0);

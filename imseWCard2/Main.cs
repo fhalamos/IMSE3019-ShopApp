@@ -54,11 +54,20 @@ namespace imseWCard2
         // true if a transaction is done. Reset to false if a connection is lost.
         private bool transectionDone = false;
 
-        // @fhalamos: Block 0, 1 and 2 of sector 15, i.e. block 0x3E, are used to save the biggest purchases
+        // Block 0, 1 and 2 of sector 15, i.e. block 0x3E, are used to save the biggest purchases
         private int sector = 15;
         private int block0 = 0x3C;
         private int block1 = 0x3D;
         private int block2 = 0x3E;
+
+        //Parking fees
+        private int PricePerHour = 30;
+
+        //Free hour policy. 400 Dollars = 5 free hours (Combo1). 200 Dollares = 2 free hours (Combo2). No accumulative. Money in cents
+        private int combo1freeHours = 5;
+        private int combo1MoneyNeeded = 40000;
+        private int combo2freeHours = 2;
+        private int combo2MoneyNeeded = 20000;
 
         public Main()
         {
@@ -326,7 +335,7 @@ namespace imseWCard2
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {
+        {   
             if (!CADw.connect())
             {
                 // Connection lost.
@@ -334,6 +343,7 @@ namespace imseWCard2
                 {
                     textBoxMsg.Text = "Lose connection!";
                     labelAmt.Text = "";
+                    quantityFreeHourslabel.Text = "";
                 }
                 btnConfigGo.Enabled = false;
                 connected = false;
@@ -366,7 +376,7 @@ namespace imseWCard2
                     btnConfigGo.Enabled = true;
                 }
 
-                // @fhalamos:
+                // Display amount of parking credit
                 // Read the value of the 3 blocks in card, sums them and shows the sum in labelAmt
                 long amount0 = 0;
                 if (CADw.readValueBlock(block0, ref amount0) == false)
@@ -391,6 +401,34 @@ namespace imseWCard2
 
                 // Display the value 
                 labelAmt.Text = toDollar(amount0+amount1+amount2);
+
+                //Display amout of free parking hours available
+                quantityFreeHourslabel.Text = calculateFreeParkingHours(amount0 + amount1 + amount2);
+            }
+        }
+
+        private void resetMemoryValues()
+        {
+            CADw.updateValueBlock(block0, 0);
+            CADw.updateValueBlock(block1, 0);
+            CADw.updateValueBlock(block2, 0);
+        }
+
+        private string calculateFreeParkingHours(long credit)
+        {
+            if (credit >= combo1MoneyNeeded)
+            {
+                return combo1freeHours+"";
+            }
+
+            if (credit >= combo2MoneyNeeded)
+            {
+                return combo2freeHours + "";
+            }
+
+            else
+            {
+                return "None";
             }
         }
 
@@ -641,10 +679,8 @@ namespace imseWCard2
             }
         }
 
-        private void textBoxMsg_TextChanged(object sender, EventArgs e)
-        {
 
-        }
+
 
 
 

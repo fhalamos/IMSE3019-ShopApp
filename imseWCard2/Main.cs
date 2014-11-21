@@ -341,7 +341,7 @@ namespace imseWCard2
             }
             else
             {
-                // Enable "Go" button if connected.
+                // Enable "Charge" button if connected.
                 if (!connected)
                 {
                     connected = true;
@@ -355,6 +355,17 @@ namespace imseWCard2
                     textBoxMsg.Text ="Authentication error!";
                     return;
                 }
+
+                // Disable "Charge" button if Amount quantity is 0.
+                if (textBoxConfigAmt.Text.Equals("0") || textBoxConfigAmt.Text.Equals(""))
+                {
+                    btnConfigGo.Enabled = false;
+                }
+                else
+                {
+                    btnConfigGo.Enabled = true;
+                }
+
                 // @fhalamos:
                 // Read the value of the 3 blocks in card, sums them and shows the sum in labelAmt
                 long amount0 = 0;

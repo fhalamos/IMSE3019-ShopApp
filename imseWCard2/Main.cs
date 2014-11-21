@@ -25,6 +25,9 @@
 //
 //      2. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E, is used to store the value for
 //         transactions.
+
+//      3. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car patent.
+
 //
 //=======================================================================================================================
 
@@ -54,11 +57,18 @@ namespace imseWCard2
         // true if a transaction is done. Reset to false if a connection is lost.
         private bool transectionDone = false;
 
-        // Block 0, 1 and 2 of sector 15, i.e. block 0x3E, are used to save the biggest purchases
-        private int sector = 15;
-        private int block0 = 0x3C;
-        private int block1 = 0x3D;
-        private int block2 = 0x3E;
+        // Block 0, 1 and 2 of sector 15, i.e. block 0x3Cx, 0x3D, 0x3E, are used to save the biggest purchases
+        private int amountsSector = 15;
+        private int amount0Block = 0x3C;
+        private int amount1Block = 0x3D;
+        private int amount2Block = 0x3E;
+
+        //Block 1 of sector 14, i.e block 0x39, is used to save card ID. Block 2, i.e block 0x3A, is used to save car patent.
+
+        private int informationSector = 14;
+        private int cardIdBlock = 0x38;
+        private int carPatentBlock = 0x3A;
+
 
         //Parking fees
         private int PricePerHour = 30;
@@ -335,83 +345,143 @@ namespace imseWCard2
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {   
+        {
             if (!CADw.connect())
             {
-                // Connection lost.
-                if (connected)
-                {
-                    textBoxMsg.Text = "Lose connection!";
-                    labelAmt.Text = "";
-                    quantityFreeHourslabel.Text = "";
-                }
-                btnConfigGo.Enabled = false;
-                connected = false;
-                return;
+                announceDisconection();
             }
             else
             {
-                // Enable "Charge" button if connected.
                 if (!connected)
                 {
-                    connected = true;
-                    textBoxMsg.Text = "Connected.";
-                    btnConfigGo.Enabled = true;
-                } 
-                
+                    announceConnection();
+                }
+
+                if (authenticateSector(informationSector))
+                  displayCardInformation();
+
                 // Authenticate before reading or writing to a sector
-                if (CADw.authenticate(sector) == false)
+                if (authenticateSector(amountsSector))
                 {
-                    textBoxMsg.Text ="Authentication error!";
-                    return;
-                }
 
-                // Disable "Charge" button if Amount quantity is 0.
-                if (textBoxConfigAmt.Text.Equals("0") || textBoxConfigAmt.Text.Equals(""))
-                {
-                    btnConfigGo.Enabled = false;
-                }
-                else
-                {
-                    btnConfigGo.Enabled = true;
-                }
+                    
+                    // Disable "Charge" button if Amount quantity is 0.
+                    disableOrEnableChargeButton();
 
-                // Display amount of parking credit
-                // Read the value of the 3 blocks in card, sums them and shows the sum in labelAmt
-                long amount0 = 0;
-                if (CADw.readValueBlock(block0, ref amount0) == false)
-                {
-                    textBoxMsg.Text = "Read value error!";
-                    return;
-                }
+                    long amount = displayAmountOfParkingCredit();
 
-                long amount1 = 0;
-                if (CADw.readValueBlock(block1, ref amount1) == false)
-                {
-                    textBoxMsg.Text = "Read value error!";
-                    return;
+                    //Display amout of free parking hours available
+                    quantityFreeHourslabel.Text = calculateFreeParkingHours(amount);
                 }
-                
-                long amount2 = 0;
-                if (CADw.readValueBlock(block2, ref amount2) == false)
-                {
-                    textBoxMsg.Text = "Read value error!";
-                    return;
-                }
+            }
+        }
 
-                // Display the value 
-                labelAmt.Text = toDollar(amount0+amount1+amount2);
 
-                //Display amout of free parking hours available
-                quantityFreeHourslabel.Text = calculateFreeParkingHours(amount0 + amount1 + amount2);
+        private void displayCardInformation()
+        {
+            string cardId="";
+            string carPatent = "";
+
+            //The following should be done in the entrance gate application
+            CADw.write(cardIdBlock, "1234");
+            CADw.write(carPatentBlock, "FDGH96");
+
+            if (CADw.read(cardIdBlock, ref cardId) == false)
+            {
+                textBoxMsg.Text = "Read value error!";
+                return;
+            }
+
+            
+            if (CADw.read(carPatentBlock, ref carPatent) == false)
+            {
+                textBoxMsg.Text = "Read value error!";
+                return;
+            }
+            // Display the value 
+            cardIdLabel.Text = cardId + "";
+            carPatentLabel.Text = carPatent;
+        }
+
+        private bool authenticateSector(int sector)
+        {
+            if (CADw.authenticate(sector) == false)
+            {
+                textBoxMsg.Text = "Authentication error!";
+                return false;
+            }
+            return true;
+        }
+
+        private long displayAmountOfParkingCredit()
+        {
+            // Read the value of the 3 blocks in card, sums them and shows the sum in labelAmt
+            long amount0 = 0;
+            if (CADw.readValueBlock(amount0Block, ref amount0) == false)
+            {
+                textBoxMsg.Text = "Read value error!";
+                return 0;
+            }
+
+            long amount1 = 0;
+            if (CADw.readValueBlock(amount1Block, ref amount1) == false)
+            {
+                textBoxMsg.Text = "Read value error!";
+                return 0;
+            }
+
+            long amount2 = 0;
+            if (CADw.readValueBlock(amount2Block, ref amount2) == false)
+            {
+                textBoxMsg.Text = "Read value error!";
+                return 0;
+            }
+
+            // Display the value 
+            labelAmt.Text = toDollar(amount0 + amount1 + amount2);
+            return amount0 + amount1 + amount2;
+        }
+
+        private void announceConnection()
+        {
+            connected = true;
+            textBoxMsg.Text = "Connected.";
+        }
+
+        private void announceDisconection()
+        {
+            // Connection lost.
+            if (connected)
+            {
+                textBoxMsg.Text = "Lose connection!";
+                labelAmt.Text = "";
+                quantityFreeHourslabel.Text = "";
+                cardIdLabel.Text = "";
+                carPatentLabel.Text = "";
+            }
+            btnConfigGo.Enabled = false;
+            connected = false;
+            return;
+        }
+
+        private void disableOrEnableChargeButton()
+        {
+            if (textBoxConfigAmt.Text.Equals("0") || textBoxConfigAmt.Text.Equals(""))
+            {
+                btnConfigGo.Enabled = false;
+            }
+            else
+            {
+                btnConfigGo.Enabled = true;
             }
         }
 
         private void resetMemoryValues()
         {
-            CADw.updateValueBlock(block0, 0);
-            CADw.updateValueBlock(block1, 0);
-            CADw.updateValueBlock(block2, 0);
+            CADw.updateValueBlock(cardIdBlock, 0);
+            CADw.updateValueBlock(amount0Block, 0);
+            CADw.updateValueBlock(amount1Block, 0);
+            CADw.updateValueBlock(amount2Block, 0);
         }
 
         private string calculateFreeParkingHours(long credit)
@@ -480,11 +550,11 @@ namespace imseWCard2
             //@fhalamos
             //We will save amount only if it is bigger than any of the other 3 amounts.
             long amount0 = 0;
-            CADw.readValueBlock(block0, ref amount0);
+            CADw.readValueBlock(amount0Block, ref amount0);
             long amount1 = 0;
-            CADw.readValueBlock(block1, ref amount1);
+            CADw.readValueBlock(amount1Block, ref amount1);
             long amount2 = 0;
-            CADw.readValueBlock(block2, ref amount2);
+            CADw.readValueBlock(amount2Block, ref amount2);
             
             //We need to know which is the smallest amount actually saved
             long min0 = Math.Min(amount0, amount1);
@@ -493,11 +563,11 @@ namespace imseWCard2
             if (Amount > min)
             {
                 if (min == amount0)
-                    CADw.updateValueBlock(block0, Amount);
+                    CADw.updateValueBlock(amount0Block, Amount);
                 else if (min == amount1)
-                    CADw.updateValueBlock(block1, Amount);
+                    CADw.updateValueBlock(amount1Block, Amount);
                 else if (min == amount2)
-                    CADw.updateValueBlock(block2, Amount);
+                    CADw.updateValueBlock(amount2Block, Amount);
                 
 
                 System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
@@ -534,7 +604,7 @@ namespace imseWCard2
                 } 
 
                 // Authenticate before reading or writing
-                if (CADw.authenticate(sector) == false)
+                if (CADw.authenticate(amountsSector) == false)
                 {
                     textBoxMsg.Text = "Authentication error!";
                     return;
@@ -542,7 +612,7 @@ namespace imseWCard2
 
                 //Read value from the card
                 long amount = 0;
-                if (CADw.readValueBlock(block2, ref amount) == false)
+                if (CADw.readValueBlock(amount2Block, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;
@@ -574,7 +644,7 @@ namespace imseWCard2
              * add to the card.
              * */
             int amount = Convert.ToInt32(100.0 * value);
-            if (CADw.incValueBlock(block2, amount) == false)
+            if (CADw.incValueBlock(amount2Block, amount) == false)
                 textBoxMsg.Text = "Value increment error!";
         }
 
@@ -603,7 +673,7 @@ namespace imseWCard2
                 } 
                 
                 // Authenticate before reading or writing
-                if (CADw.authenticate(sector) == false)
+                if (CADw.authenticate(amountsSector) == false)
                 {
                     textBoxMsg.Text = "Authentication error!";
                     return;
@@ -611,7 +681,7 @@ namespace imseWCard2
 
                 // Read value from the card
                 long amount = 0;
-                if (CADw.readValueBlock(block2, ref amount) == false)
+                if (CADw.readValueBlock(amount2Block, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;
@@ -642,7 +712,7 @@ namespace imseWCard2
                     }
 
                     // Subtract theamount from the card.
-                    if (CADw.decValueBlock(block2, newAmount) == false)
+                    if (CADw.decValueBlock(amount2Block, newAmount) == false)
                     {
                         textBoxMsg.Text = "Value decrement error!";
                         return;
@@ -651,7 +721,7 @@ namespace imseWCard2
                 }
 
                 // Read value from the card
-                if (CADw.readValueBlock(block2, ref amount) == false)
+                if (CADw.readValueBlock(amount2Block, ref amount) == false)
                 {
                     textBoxMsg.Text = "Read value error!";
                     return;

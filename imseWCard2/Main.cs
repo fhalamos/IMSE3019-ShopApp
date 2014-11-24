@@ -148,10 +148,6 @@ namespace imseWCard2
             string cardId="";
             string carPatent = "";
 
-            //The following should be done in the entrance gate application
-            CADw.write(cardIdBlock, "1234");
-            CADw.write(carPatentBlock, "FDGH96");
-
             if (CADw.read(cardIdBlock, ref cardId) == false)
             {
                 textBoxMsg.Text = "Read value error!";

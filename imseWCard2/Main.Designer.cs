@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.Configure = new System.Windows.Forms.TabPage();
+            this.carPatentLabel = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.labelAmt = new System.Windows.Forms.Label();
             this.quantityFreeHourslabel = new System.Windows.Forms.Label();
             this.freeHourslabel = new System.Windows.Forms.Label();
@@ -79,8 +81,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.timer3 = new System.Windows.Forms.Timer(this.components);
-            this.label10 = new System.Windows.Forms.Label();
-            this.carPatentLabel = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.Configure.SuspendLayout();
             this.Credit.SuspendLayout();
@@ -122,7 +122,25 @@
             this.Configure.Padding = new System.Windows.Forms.Padding(3);
             this.Configure.Size = new System.Drawing.Size(366, 476);
             this.Configure.TabIndex = 0;
-            this.Configure.Text = "Configure";
+            this.Configure.Text = "Shop Application";
+            // 
+            // carPatentLabel
+            // 
+            this.carPatentLabel.AutoSize = true;
+            this.carPatentLabel.Location = new System.Drawing.Point(149, 152);
+            this.carPatentLabel.Name = "carPatentLabel";
+            this.carPatentLabel.Size = new System.Drawing.Size(153, 22);
+            this.carPatentLabel.TabIndex = 17;
+            this.carPatentLabel.Text = "             ";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 152);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(131, 22);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Car Patent:";
             // 
             // labelAmt
             // 
@@ -621,24 +639,6 @@
             // timer3
             // 
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(12, 152);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(131, 22);
-            this.label10.TabIndex = 16;
-            this.label10.Text = "Car Patent:";
-            // 
-            // carPatentLabel
-            // 
-            this.carPatentLabel.AutoSize = true;
-            this.carPatentLabel.Location = new System.Drawing.Point(149, 152);
-            this.carPatentLabel.Name = "carPatentLabel";
-            this.carPatentLabel.Size = new System.Drawing.Size(153, 22);
-            this.carPatentLabel.TabIndex = 17;
-            this.carPatentLabel.Text = "             ";
             // 
             // Main
             // 

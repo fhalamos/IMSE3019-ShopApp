@@ -1,36 +1,19 @@
-﻿//=======================================================================================================================
-//   IMSE Department, University of Hong Kong 
-//
-//   Created by  : Bill Chan
-//   Date        : 12 / 1 / 2012
-//   Remark      :                   
-//      1. The reference imseWSC1K should be added.
-//
-//      2. The aim of this application example is to demonstrate the use of the 
-//         imseWSC1K class library to do payment transection (credit and debit). 
-//
-//      3. Block 2 of sector 15, i.e. block 0x3E, is used to store the value for
-//         transactions.
-//
-//=======================================================================================================================
+﻿/*=======================================================================================================================
+    Parking System Project - IMSE3019 - Shop Application
 
+    Created by  : Felipe Alamos
+    Date        : 2nd December 2014
+    Remark      :                   
+        1. The project is based in the project developed by Bill Chan, imseWCard2, for IMSE3019 Smart Card Laboratory.
 
-//=======================================================================================================================
-//   Parking System Project - IMSE3019 
-//
-//   Created by  : Felipe Alamos
-//   Date        : 12 / 1 / 2012
-//   Remark      :                   
-//      1. The project is based in the project developed by Bill Chan, mentioned aboved.
-//
-//      2. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E, is used to store the value for
-//         transactions.
+        2. The reference imseWSC1K should be added.
 
-//      3. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car patent.
+        3. The current application enables a Shop Store to administrate the parking card.
 
-//
-//=======================================================================================================================
+        4. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car patent.
 
+        5. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E
+*///=======================================================================================================================
 
 
 using System;
@@ -82,220 +65,6 @@ namespace imseWCard2
         public Main()
         {
             InitializeComponent();
-        }
-
-        private void btn100_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "100";
-        }
-
-        private void btn200_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "200";
-        }
-
-        private void btn500_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "500";
-        }
-
-        private void btn800_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "800";
-        }
-
-        private void btn1000_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "1000";
-        }
-
-        private void btn2000_Click(object sender, EventArgs e)
-        {
-            textBoxCAmt.Text = "2000";
-        }
-
-        private void addDigit(string d)
-        { // Append a digit to the text box textBoxDAmt
-          // The value should contains not more than 2 decimal points.
-            string s = textBoxDAmt.Text;
-            if (s.Contains("."))
-            {
-                if (s.IndexOf(".") + 2 < s.Length)
-                    return;
-            }
-            if (s.Length==1 && s[0]=='0')
-                textBoxDAmt.Text = d;
-            else
-                textBoxDAmt.Text = s + d;
-        }
-
-        private void btn1_Click(object sender, EventArgs e)
-        {
-            addDigit("1");
-        }
-
-        private void btn2_Click(object sender, EventArgs e)
-        {
-            addDigit("2");
-        }
-
-        private void btn3_Click(object sender, EventArgs e)
-        {
-            addDigit("3");
-        }
-
-        private void btn4_Click(object sender, EventArgs e)
-        {
-            addDigit("4");
-        }
-
-        private void btn5_Click(object sender, EventArgs e)
-        {
-            addDigit("5");
-        }
-
-        private void btn6_Click(object sender, EventArgs e)
-        {
-            addDigit("6");
-        }
-
-        private void btn7_Click(object sender, EventArgs e)
-        {
-            addDigit("7");
-        }
-
-        private void btn8_Click(object sender, EventArgs e)
-        {
-            addDigit("8");
-        }
-
-        private void btn9_Click(object sender, EventArgs e)
-        {
-            addDigit("9");
-        }
-
-        private void btn0_Click(object sender, EventArgs e)
-        {
-            addDigit("0");
-        }
-
-        private void btnCLR_Click(object sender, EventArgs e)
-        {
-            textBoxDAmt.Text = "0";
-        }
-
-        private void btnDOT_Click(object sender, EventArgs e)
-        {
-            string s = textBoxDAmt.Text;
-            if (s.Contains(".")==false)
-                textBoxDAmt.Text = s + ".";
-        }
-
-        private void radioButtonDebitReady_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonDebitReady.Checked == false)
-                return;
-
-            /* The value in the text box textBoxDAmt represents the amount to be
-             * debit from the card in dollar. If radio button "ready" is selected
-             * and the value is positive, disable input buttons and then enable 
-             * the timer.
-             * */
-
-            double value = 0.0;
-
-            if (textBoxDAmt.Text.Length > 0)
-                value = Convert.ToDouble(textBoxDAmt.Text);
-
-            if (value <= 0)
-            {
-                radioButtonDebitChange.Select();
-                return;
-            }
-
-            btn1.Enabled = false;
-            btn2.Enabled = false;
-            btn3.Enabled = false;
-            btn4.Enabled = false;
-            btn5.Enabled = false;
-            btn6.Enabled = false;
-            btn7.Enabled = false;
-            btn8.Enabled = false;
-            btn9.Enabled = false;
-            btnDOT.Enabled = false;
-            btn0.Enabled = false;
-            btnCLR.Enabled = false;
-            timer3.Enabled = true;
-        }
-
-        private void radioButtonDebitChange_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonDebitChange.Checked == false)
-                return;
-
-            /* If radio button "change" is selected, enable input buttons.
-             * and disable timer.
-             * */
-
-            btn1.Enabled = true;
-            btn2.Enabled = true;
-            btn3.Enabled = true;
-            btn4.Enabled = true;
-            btn5.Enabled = true;
-            btn6.Enabled = true;
-            btn7.Enabled = true;
-            btn8.Enabled = true;
-            btn9.Enabled = true;
-            btnDOT.Enabled = true;
-            btn0.Enabled = true;
-            btnCLR.Enabled = true;
-            textBoxDAmt.Text = "0";
-            timer3.Enabled = false;
-        }
-
-        private void radioButtonCreditReady_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonCreditReady.Checked == false)
-                return;
-
-            /* The value in the text box textBoxCAmt represents the amount to be
-             * credit to the card in dollar. If radio button "ready" is selected 
-             * and the value is positive, disable input buttons.
-             * */
-            double value = 0.0;
-
-            if (textBoxCAmt.Text.Length > 0)
-                value = Convert.ToDouble(textBoxCAmt.Text);
-
-            if (value <= 0)
-            {
-                radioButtonCreditChange.Select();
-                return;
-            }
-            
-            btn100.Enabled = false;
-            btn200.Enabled = false;
-            btn500.Enabled = false;
-            btn800.Enabled = false;
-            btn1000.Enabled = false;
-            btn2000.Enabled = false;
-            btnCredit.Enabled = true;
-        }
-
-        private void radioButtonCreditChange_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonCreditChange.Checked == false)
-                return;
-            /* If radio button "change" is selected, enable input buttons.
-             * */
-            btn100.Enabled = true;
-            btn200.Enabled = true;
-            btn500.Enabled = true;
-            btn800.Enabled = true;
-            btn1000.Enabled = true;
-            btn2000.Enabled = true;
-            textBoxCAmt.Text = "0";
-            btnCredit.Enabled = false;
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -363,8 +132,6 @@ namespace imseWCard2
                 // Authenticate before reading or writing to a sector
                 if (authenticateSector(amountsSector))
                 {
-
-                    
                     // Disable "Charge" button if Amount quantity is 0.
                     disableOrEnableChargeButton();
 
@@ -375,7 +142,6 @@ namespace imseWCard2
                 }
             }
         }
-
 
         private void displayCardInformation()
         {
@@ -581,6 +347,224 @@ namespace imseWCard2
             textBoxConfigAmt.Text = "0";
         }
 
+
+
+
+        //****************OUT OF USE ****************************
+        private void btn100_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "100";
+        }
+
+        private void btn200_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "200";
+        }
+
+        private void btn500_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "500";
+        }
+
+        private void btn800_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "800";
+        }
+
+        private void btn1000_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "1000";
+        }
+
+        private void btn2000_Click(object sender, EventArgs e)
+        {
+            textBoxCAmt.Text = "2000";
+        }
+
+        private void addDigit(string d)
+        { // Append a digit to the text box textBoxDAmt
+            // The value should contains not more than 2 decimal points.
+            string s = textBoxDAmt.Text;
+            if (s.Contains("."))
+            {
+                if (s.IndexOf(".") + 2 < s.Length)
+                    return;
+            }
+            if (s.Length == 1 && s[0] == '0')
+                textBoxDAmt.Text = d;
+            else
+                textBoxDAmt.Text = s + d;
+        }
+
+        private void btn1_Click(object sender, EventArgs e)
+        {
+            addDigit("1");
+        }
+
+        private void btn2_Click(object sender, EventArgs e)
+        {
+            addDigit("2");
+        }
+
+        private void btn3_Click(object sender, EventArgs e)
+        {
+            addDigit("3");
+        }
+
+        private void btn4_Click(object sender, EventArgs e)
+        {
+            addDigit("4");
+        }
+
+        private void btn5_Click(object sender, EventArgs e)
+        {
+            addDigit("5");
+        }
+
+        private void btn6_Click(object sender, EventArgs e)
+        {
+            addDigit("6");
+        }
+
+        private void btn7_Click(object sender, EventArgs e)
+        {
+            addDigit("7");
+        }
+
+        private void btn8_Click(object sender, EventArgs e)
+        {
+            addDigit("8");
+        }
+
+        private void btn9_Click(object sender, EventArgs e)
+        {
+            addDigit("9");
+        }
+
+        private void btn0_Click(object sender, EventArgs e)
+        {
+            addDigit("0");
+        }
+
+        private void btnCLR_Click(object sender, EventArgs e)
+        {
+            textBoxDAmt.Text = "0";
+        }
+
+        private void btnDOT_Click(object sender, EventArgs e)
+        {
+            string s = textBoxDAmt.Text;
+            if (s.Contains(".") == false)
+                textBoxDAmt.Text = s + ".";
+        }
+
+        private void radioButtonDebitReady_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonDebitReady.Checked == false)
+                return;
+
+            /* The value in the text box textBoxDAmt represents the amount to be
+             * debit from the card in dollar. If radio button "ready" is selected
+             * and the value is positive, disable input buttons and then enable 
+             * the timer.
+             * */
+
+            double value = 0.0;
+
+            if (textBoxDAmt.Text.Length > 0)
+                value = Convert.ToDouble(textBoxDAmt.Text);
+
+            if (value <= 0)
+            {
+                radioButtonDebitChange.Select();
+                return;
+            }
+
+            btn1.Enabled = false;
+            btn2.Enabled = false;
+            btn3.Enabled = false;
+            btn4.Enabled = false;
+            btn5.Enabled = false;
+            btn6.Enabled = false;
+            btn7.Enabled = false;
+            btn8.Enabled = false;
+            btn9.Enabled = false;
+            btnDOT.Enabled = false;
+            btn0.Enabled = false;
+            btnCLR.Enabled = false;
+            timer3.Enabled = true;
+        }
+
+        private void radioButtonDebitChange_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonDebitChange.Checked == false)
+                return;
+
+            /* If radio button "change" is selected, enable input buttons.
+             * and disable timer.
+             * */
+
+            btn1.Enabled = true;
+            btn2.Enabled = true;
+            btn3.Enabled = true;
+            btn4.Enabled = true;
+            btn5.Enabled = true;
+            btn6.Enabled = true;
+            btn7.Enabled = true;
+            btn8.Enabled = true;
+            btn9.Enabled = true;
+            btnDOT.Enabled = true;
+            btn0.Enabled = true;
+            btnCLR.Enabled = true;
+            textBoxDAmt.Text = "0";
+            timer3.Enabled = false;
+        }
+
+        private void radioButtonCreditReady_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonCreditReady.Checked == false)
+                return;
+
+            /* The value in the text box textBoxCAmt represents the amount to be
+             * credit to the card in dollar. If radio button "ready" is selected 
+             * and the value is positive, disable input buttons.
+             * */
+            double value = 0.0;
+
+            if (textBoxCAmt.Text.Length > 0)
+                value = Convert.ToDouble(textBoxCAmt.Text);
+
+            if (value <= 0)
+            {
+                radioButtonCreditChange.Select();
+                return;
+            }
+
+            btn100.Enabled = false;
+            btn200.Enabled = false;
+            btn500.Enabled = false;
+            btn800.Enabled = false;
+            btn1000.Enabled = false;
+            btn2000.Enabled = false;
+            btnCredit.Enabled = true;
+        }
+
+        private void radioButtonCreditChange_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonCreditChange.Checked == false)
+                return;
+            /* If radio button "change" is selected, enable input buttons.
+             * */
+            btn100.Enabled = true;
+            btn200.Enabled = true;
+            btn500.Enabled = true;
+            btn800.Enabled = true;
+            btn1000.Enabled = true;
+            btn2000.Enabled = true;
+            textBoxCAmt.Text = "0";
+            btnCredit.Enabled = false;
+        }
+
         private void timer2_Tick(object sender, EventArgs e)
         {
             if (!CADw.connect())
@@ -750,13 +734,6 @@ namespace imseWCard2
             }
         }
 
-
-
-
-
-
-
-
-
+        //****************END OUT OF USE ****************************
     }
 }

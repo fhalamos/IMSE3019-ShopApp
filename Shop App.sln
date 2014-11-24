@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "imseWCard2", "imseWCard2\imseWCard2.csproj", "{43D60DCC-ED98-4901-AEF4-5C92765F93D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop App", "shopApp\Shop App.csproj", "{43D60DCC-ED98-4901-AEF4-5C92765F93D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,9 +11,11 @@
         3. The current application enables a Shop Store to administrate the parking card.
 
         4. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car patent.
-
+           The 3rd block of Sector 14 is used to save the entrance time. 
+        
         5. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E
-*///=======================================================================================================================
+*/
+//=======================================================================================================================
 
 
 using System;
@@ -46,12 +48,13 @@ namespace imseWCard2
         private int amount1Block = 0x3D;
         private int amount2Block = 0x3E;
 
-        //Block 1 of sector 14, i.e block 0x39, is used to save card ID. Block 2, i.e block 0x3A, is used to save car patent.
+        //Block 0 of sector 14, i.e block 0x38, is used to save card ID. Block 1, i.e block 0x39, is used to save car patent.
+        //Block 2, i.e. block 0x3A is used to save the time of entrance
 
         private int informationSector = 14;
         private int cardIdBlock = 0x38;
-        private int carPatentBlock = 0x3A;
-
+        private int carPatentBlock = 0x39;
+        private int entranceTimeBlock = 0x3A;
 
         //Parking fees
         private int PricePerHour = 30;

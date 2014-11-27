@@ -57,6 +57,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.btnDot = new System.Windows.Forms.Button();
             this.Configure.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.SuspendLayout();
@@ -68,6 +69,7 @@
             // Configure
             // 
             this.Configure.BackColor = System.Drawing.Color.LightBlue;
+            this.Configure.Controls.Add(this.btnDot);
             this.Configure.Controls.Add(this.textBoxAmount);
             this.Configure.Controls.Add(this.textBoxMsg);
             this.Configure.Controls.Add(this.btnClear);
@@ -121,7 +123,7 @@
             // btnClear
             // 
             this.btnClear.Font = new System.Drawing.Font("Courier New", 11F, System.Drawing.FontStyle.Bold);
-            this.btnClear.Location = new System.Drawing.Point(117, 525);
+            this.btnClear.Location = new System.Drawing.Point(151, 524);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(62, 62);
             this.btnClear.TabIndex = 33;
@@ -131,7 +133,7 @@
             // 
             // btn0
             // 
-            this.btn0.Location = new System.Drawing.Point(49, 525);
+            this.btn0.Location = new System.Drawing.Point(81, 525);
             this.btn0.Name = "btn0";
             this.btn0.Size = new System.Drawing.Size(62, 62);
             this.btn0.TabIndex = 32;
@@ -356,7 +358,16 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(374, 635);
             this.tabControl.TabIndex = 0;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            // 
+            // btnDot
+            // 
+            this.btnDot.Location = new System.Drawing.Point(16, 524);
+            this.btnDot.Name = "btnDot";
+            this.btnDot.Size = new System.Drawing.Size(62, 62);
+            this.btnDot.TabIndex = 35;
+            this.btnDot.Text = ".";
+            this.btnDot.UseVisualStyleBackColor = true;
+            this.btnDot.Click += new System.EventHandler(this.btnDot_Click);
             // 
             // Main
             // 
@@ -406,6 +417,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.Button btnDot;
     }
 }
 

@@ -65,6 +65,8 @@ namespace imseWCard2
         private int combo2freeHours = 2;
         private int combo2MoneyNeeded = 20000;
 
+
+
         public Main()
         {
             InitializeComponent();
@@ -79,31 +81,6 @@ namespace imseWCard2
             }
             textBoxMsg.Text = "Reader initialization successful.";
             timer1.Enabled = true;
-        }
-
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            /* initialize timers and other values when the user switch
-             * between the three main functions: configure, credit and debit.
-             * Timer1, timer2 and timer3 are used for configure, credit and debit
-             * respectively.
-             * */
-
-            switch (tabControl.SelectedIndex)
-            {
-                case 0:
-                    timer1.Enabled = true;
-                    transectionDone = false;
-                    labelAmt.Text = "";
-                    break;
-                case 1:
-                    timer1.Enabled = false;
-                    transectionDone = false;
-                    break;
-                case 2:
-                    timer1.Enabled = false;
-                    break;
-            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -290,6 +267,7 @@ namespace imseWCard2
         {
             /* Initialize a card's value
              * */
+            
             long Amount;
             double tempInt;
 
@@ -301,7 +279,8 @@ namespace imseWCard2
                 return;
             }
             // convert to cents and store into card
-            Amount = 100*Convert.ToInt32(textBoxAmount.Text);
+
+            Amount = Convert.ToInt32(100 * Convert.ToDouble(textBoxAmount.Text, System.Globalization.CultureInfo.InvariantCulture));
             
             //@fhalamos
             //We will save amount only if it is bigger than any of the other 3 amounts.
@@ -336,13 +315,8 @@ namespace imseWCard2
             textBoxAmount.Text = "0";
         }
 
-
-
-
-        //****************OUT OF USE ****************************
-       
         private void addDigit(string d)
-        { // Append a digit to the text box textBoxDAmt
+        { // Append a digit to the text box textAmount
             // The value should contains not more than 2 decimal points.
             string s = textBoxAmount.Text;
             if (s.Contains("."))
@@ -422,6 +396,7 @@ namespace imseWCard2
             textBoxAmount.Text = "0";
         }
 
+        
        
     }
 }

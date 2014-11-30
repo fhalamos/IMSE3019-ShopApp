@@ -27,7 +27,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using imseWSC1K;  // the class library for contactless smart card
+using imseWSC1K;
+using System.IO;  // the class library for contactless smart card
 
 namespace imseWCard2
 {
@@ -81,6 +82,81 @@ namespace imseWCard2
             }
             textBoxMsg.Text = "Reader initialization successful.";
             timer1.Enabled = true;
+        }
+
+        private void btnCharge_Click(object sender, EventArgs e)
+        {
+
+
+            // Check whether the value in the text box is valid.
+            if (!valueInTextBoxIsValid())
+                return;
+            
+            // Convert to cents and store into card
+            long Amount = Convert.ToInt32(100 * Convert.ToDouble(textBoxAmount.Text, System.Globalization.CultureInfo.InvariantCulture));
+
+            //We will save amount only if it is bigger than any of the other 3 amounts.
+            long amount0 = 0;
+            CADw.readValueBlock(amount0Block, ref amount0);
+            long amount1 = 0;
+            CADw.readValueBlock(amount1Block, ref amount1);
+            long amount2 = 0;
+            CADw.readValueBlock(amount2Block, ref amount2);
+
+            //We need to know which is the smallest amount actually saved
+            long min0 = Math.Min(amount0, amount1);
+            long min = Math.Min(min0, amount2);
+
+            if (Amount > min)
+            {
+                if (min == amount0)
+                    CADw.updateValueBlock(amount0Block, Amount);
+                else if (min == amount1)
+                    CADw.updateValueBlock(amount1Block, Amount);
+                else if (min == amount2)
+                    CADw.updateValueBlock(amount2Block, Amount);
+
+                saveChargeInLocalFile(Amount);
+
+                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Ups! Your purchase is too small to be saved, it is smaller than any of your 3 biggest purchases");
+            }
+
+            textBoxAmount.Text = "0";
+        }
+
+        private void saveChargeInLocalFile(long amount)
+        {
+            string path = @"parking-credits-history.txt";
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+                TextWriter tw = new StreamWriter(path);
+                tw.WriteLine("Record of all charges to parking cards in this store.");
+                tw.WriteLine("***********");
+                tw.Close();
+            }
+            TextWriter tw2 = new StreamWriter(path, true);
+
+            System.DateTime chargeTime = System.DateTime.Now;
+            
+            tw2.WriteLine("Time of charge: " + chargeTime.ToString() + ';' +" Card Id: " + cardIdLabel.Text + ';' +" Car patent: " +carPatentLabel.Text + ';' +" Amount saved: " + toDollar(amount)+ " dollars.");
+            tw2.Close();
+        }
+
+        private bool valueInTextBoxIsValid()
+        {
+            double tempInt;
+            if (!double.TryParse(textBoxAmount.Text, out tempInt))
+            {
+                textBoxAmount.Focus();
+                textBoxAmount.Text = "0";
+                return false;
+            }
+            return true;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -263,58 +339,6 @@ namespace imseWCard2
             return str;
         }
 
-        private void btnCharge_Click(object sender, EventArgs e)
-        {
-            /* Initialize a card's value
-             * */
-            
-            long Amount;
-            double tempInt;
-
-            // Check whether the value in the text box is valid.
-            if (!double.TryParse(textBoxAmount.Text, out tempInt))
-            {
-                textBoxAmount.Focus();
-                textBoxAmount.Text = "0";
-                return;
-            }
-            // convert to cents and store into card
-
-            Amount = Convert.ToInt32(100 * Convert.ToDouble(textBoxAmount.Text, System.Globalization.CultureInfo.InvariantCulture));
-            
-            //@fhalamos
-            //We will save amount only if it is bigger than any of the other 3 amounts.
-            long amount0 = 0;
-            CADw.readValueBlock(amount0Block, ref amount0);
-            long amount1 = 0;
-            CADw.readValueBlock(amount1Block, ref amount1);
-            long amount2 = 0;
-            CADw.readValueBlock(amount2Block, ref amount2);
-            
-            //We need to know which is the smallest amount actually saved
-            long min0 = Math.Min(amount0, amount1);
-            long min = Math.Min(min0, amount2);
-
-            if (Amount > min)
-            {
-                if (min == amount0)
-                    CADw.updateValueBlock(amount0Block, Amount);
-                else if (min == amount1)
-                    CADw.updateValueBlock(amount1Block, Amount);
-                else if (min == amount2)
-                    CADw.updateValueBlock(amount2Block, Amount);
-                
-
-                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Ups! Your purchase is too small to be saved, it is smaller than any of your 3 biggest purchases");
-            }
-
-            textBoxAmount.Text = "0";
-        }
-
         private void addDigit(string d)
         { // Append a digit to the text box textAmount
             // The value should contains not more than 2 decimal points.
@@ -379,24 +403,18 @@ namespace imseWCard2
         {
             addDigit("0");
         }
-
-        
+  
         private void btnDot_Click(object sender, EventArgs e)
         {
             string s = textBoxAmount.Text;
             if (s.Contains(".") == false)
                 textBoxAmount.Text = s + ".";
-        }
-
-        
-        
+        } 
 
         private void btnClear_Click(object sender, EventArgs e)
         {
             textBoxAmount.Text = "0";
-        }
-
-        
+        }   
        
     }
 }

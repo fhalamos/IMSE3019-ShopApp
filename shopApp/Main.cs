@@ -10,7 +10,7 @@
 
         3. The current application enables a Shop Store to administrate the parking card.
 
-        4. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car patent.
+        4. The 1st block of Sector 14 is used to save the card id. THe 2nd block of Sector 14 is used to save the car plate number.
            The 3rd block of Sector 14 is used to save the entrance time. 
         
         5. The 3 blocks of Sector 15 are used to save the amounts of the 3 biggest purchases, i.e. blocks 0x3C, 0x3D, 0x3E
@@ -49,12 +49,12 @@ namespace imseWCard2
         private int amount1Block = 0x3D;
         private int amount2Block = 0x3E;
 
-        //Block 0 of sector 14, i.e block 0x38, is used to save card ID. Block 1, i.e block 0x39, is used to save car patent.
+        //Block 0 of sector 14, i.e block 0x38, is used to save card ID. Block 1, i.e block 0x39, is used to save car Plate.
         //Block 2, i.e. block 0x3A is used to save the time of entrance
 
         private int informationSector = 14;
         private int cardIdBlock = 0x38;
-        private int carPatentBlock = 0x39;
+        private int carPlateBlock = 0x39;
         private int entranceTimeBlock = 0x3A;
 
         //Parking fees
@@ -171,7 +171,7 @@ namespace imseWCard2
 
             System.DateTime chargeTime = System.DateTime.Now;
             
-            tw2.WriteLine("Time of charge: " + chargeTime.ToString() + ';' +" Card Id: " + cardIdLabel.Text + ';' +" Car patent: " +carPatentLabel.Text + ';' +" Amount saved: " + toDollar(amount)+ " dollars.");
+            tw2.WriteLine("Time of charge: " + chargeTime.ToString() + ';' +" Card Id: " + cardIdLabel.Text + ';' +" Car plate number: " +carPlateLabel.Text + ';' +" Amount saved: " + toDollar(amount)+ " dollars.");
             tw2.Close();
         }
 
@@ -220,7 +220,7 @@ namespace imseWCard2
         private void displayCardInformation()
         {
             string cardId="";
-            string carPatent = "";
+            string carPlate = "";
 
             if (CADw.read(cardIdBlock, ref cardId) == false)
             {
@@ -229,14 +229,14 @@ namespace imseWCard2
             }
 
             
-            if (CADw.read(carPatentBlock, ref carPatent) == false)
+            if (CADw.read(carPlateBlock, ref carPlate) == false)
             {
                 textBoxMsg.Text = "Read value error!";
                 return;
             }
             // Display the value 
             cardIdLabel.Text = cardId + "";
-            carPatentLabel.Text = carPatent;
+            carPlateLabel.Text = carPlate;
         }
 
         private bool authenticateSector(int sector)
@@ -293,7 +293,7 @@ namespace imseWCard2
                 labelAmt.Text = "";
                 quantityFreeHourslabel.Text = "";
                 cardIdLabel.Text = "";
-                carPatentLabel.Text = "";
+                carPlateLabel.Text = "";
             }
             btnCharge.Enabled = false;
             connected = false;
@@ -315,7 +315,7 @@ namespace imseWCard2
         private void resetMemoryValues()
         {
             CADw.write(cardIdBlock, "");
-            CADw.write(carPatentBlock, "");
+            CADw.write(carPlateBlock, "");
             CADw.updateValueBlock(amount0Block, 0);
             CADw.updateValueBlock(amount1Block, 0);
             CADw.updateValueBlock(amount2Block, 0);

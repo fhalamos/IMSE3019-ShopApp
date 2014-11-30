@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.Configure = new System.Windows.Forms.TabPage();
+            this.btnDot = new System.Windows.Forms.Button();
             this.textBoxAmount = new System.Windows.Forms.TextBox();
             this.textBoxMsg = new System.Windows.Forms.TextBox();
             this.btnClear = new System.Windows.Forms.Button();
@@ -44,7 +45,7 @@
             this.btn3 = new System.Windows.Forms.Button();
             this.btn2 = new System.Windows.Forms.Button();
             this.btn1 = new System.Windows.Forms.Button();
-            this.carPatentLabel = new System.Windows.Forms.Label();
+            this.carPlateLabel = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.labelAmt = new System.Windows.Forms.Label();
             this.quantityFreeHourslabel = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.btnDot = new System.Windows.Forms.Button();
             this.Configure.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.SuspendLayout();
@@ -83,7 +83,7 @@
             this.Configure.Controls.Add(this.btn3);
             this.Configure.Controls.Add(this.btn2);
             this.Configure.Controls.Add(this.btn1);
-            this.Configure.Controls.Add(this.carPatentLabel);
+            this.Configure.Controls.Add(this.carPlateLabel);
             this.Configure.Controls.Add(this.label10);
             this.Configure.Controls.Add(this.labelAmt);
             this.Configure.Controls.Add(this.quantityFreeHourslabel);
@@ -101,6 +101,16 @@
             this.Configure.Size = new System.Drawing.Size(366, 600);
             this.Configure.TabIndex = 0;
             this.Configure.Text = "Shop Application";
+            // 
+            // btnDot
+            // 
+            this.btnDot.Location = new System.Drawing.Point(16, 524);
+            this.btnDot.Name = "btnDot";
+            this.btnDot.Size = new System.Drawing.Size(62, 62);
+            this.btnDot.TabIndex = 35;
+            this.btnDot.Text = ".";
+            this.btnDot.UseVisualStyleBackColor = true;
+            this.btnDot.Click += new System.EventHandler(this.btnDot_Click);
             // 
             // textBoxAmount
             // 
@@ -231,23 +241,23 @@
             this.btn1.UseVisualStyleBackColor = true;
             this.btn1.Click += new System.EventHandler(this.btn1_Click);
             // 
-            // carPatentLabel
+            // carPlateLabel
             // 
-            this.carPatentLabel.AutoSize = true;
-            this.carPatentLabel.Location = new System.Drawing.Point(149, 152);
-            this.carPatentLabel.Name = "carPatentLabel";
-            this.carPatentLabel.Size = new System.Drawing.Size(153, 22);
-            this.carPatentLabel.TabIndex = 17;
-            this.carPatentLabel.Text = "             ";
+            this.carPlateLabel.AutoSize = true;
+            this.carPlateLabel.Location = new System.Drawing.Point(210, 152);
+            this.carPlateLabel.Name = "carPlateLabel";
+            this.carPlateLabel.Size = new System.Drawing.Size(153, 22);
+            this.carPlateLabel.TabIndex = 17;
+            this.carPlateLabel.Text = "             ";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(12, 152);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(131, 22);
+            this.label10.Size = new System.Drawing.Size(197, 22);
             this.label10.TabIndex = 16;
-            this.label10.Text = "Car Patent:";
+            this.label10.Text = "Car Plate Number:";
             // 
             // labelAmt
             // 
@@ -359,16 +369,6 @@
             this.tabControl.Size = new System.Drawing.Size(374, 635);
             this.tabControl.TabIndex = 0;
             // 
-            // btnDot
-            // 
-            this.btnDot.Location = new System.Drawing.Point(16, 524);
-            this.btnDot.Name = "btnDot";
-            this.btnDot.Size = new System.Drawing.Size(62, 62);
-            this.btnDot.TabIndex = 35;
-            this.btnDot.Text = ".";
-            this.btnDot.UseVisualStyleBackColor = true;
-            this.btnDot.Click += new System.EventHandler(this.btnDot_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -404,7 +404,7 @@
         private System.Windows.Forms.Button btn3;
         private System.Windows.Forms.Button btn2;
         private System.Windows.Forms.Button btn1;
-        private System.Windows.Forms.Label carPatentLabel;
+        private System.Windows.Forms.Label carPlateLabel;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label labelAmt;
         private System.Windows.Forms.Label quantityFreeHourslabel;

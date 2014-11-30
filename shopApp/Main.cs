@@ -95,7 +95,27 @@ namespace imseWCard2
             // Convert to cents and store into card
             long Amount = Convert.ToInt32(100 * Convert.ToDouble(textBoxAmount.Text, System.Globalization.CultureInfo.InvariantCulture));
 
+            if (!askChargeConfirmation(Amount))
+                return;
+
             //We will save amount only if it is bigger than any of the other 3 amounts.
+            bool saved = saveInCardIfBiggerThanOther3Amounts(Amount);
+            
+            if(saved)
+            {
+                saveChargeInLocalFile(Amount);
+                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Ups! Your purchase is too small to be saved, it is smaller than any of your 3 biggest purchases");
+            }
+
+            textBoxAmount.Text = "0";
+        }
+
+        private bool saveInCardIfBiggerThanOther3Amounts(long Amount)
+        {
             long amount0 = 0;
             CADw.readValueBlock(amount0Block, ref amount0);
             long amount1 = 0;
@@ -115,17 +135,25 @@ namespace imseWCard2
                     CADw.updateValueBlock(amount1Block, Amount);
                 else if (min == amount2)
                     CADw.updateValueBlock(amount2Block, Amount);
-
-                saveChargeInLocalFile(Amount);
-
-                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
+                return true;
             }
             else
-            {
-                System.Windows.Forms.MessageBox.Show("Ups! Your purchase is too small to be saved, it is smaller than any of your 3 biggest purchases");
-            }
+                return false;
+        }
 
-            textBoxAmount.Text = "0";
+        private bool askChargeConfirmation(long Amount)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to charge "+toDollar(Amount)+" dollars to the card?", "Charge confirmation", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                return true;
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                textBoxAmount.Text = "0";
+                return false;
+            }
+            return false;
         }
 
         private void saveChargeInLocalFile(long amount)

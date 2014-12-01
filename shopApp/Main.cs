@@ -99,12 +99,14 @@ namespace imseWCard2
                 return;
 
             //We will save amount only if it is bigger than any of the other 3 amounts.
-            bool saved = saveInCardIfBiggerThanOther3Amounts(Amount);
+            long deletedAmount = saveInCardIfBiggerThanOther3Amounts(Amount);
             
-            if(saved)
+            if(deletedAmount!=-1)
             {
                 saveChargeInLocalFile(Amount);
-                System.Windows.Forms.MessageBox.Show(toDollar(Amount) + " dollars added to your parking credit!");
+
+                long increaseInCredit = Amount-deletedAmount;
+                System.Windows.Forms.MessageBox.Show("Your parking credit increased in "+ toDollar(increaseInCredit)+ " dollars");
             }
             else
             {
@@ -114,7 +116,7 @@ namespace imseWCard2
             textBoxAmount.Text = "0";
         }
 
-        private bool saveInCardIfBiggerThanOther3Amounts(long Amount)
+        private long saveInCardIfBiggerThanOther3Amounts(long Amount)
         {
             long amount0 = 0;
             CADw.readValueBlock(amount0Block, ref amount0);
@@ -135,10 +137,10 @@ namespace imseWCard2
                     CADw.updateValueBlock(amount1Block, Amount);
                 else if (min == amount2)
                     CADw.updateValueBlock(amount2Block, Amount);
-                return true;
+                return min;
             }
             else
-                return false;
+                return -1;
         }
 
         private bool askChargeConfirmation(long Amount)
